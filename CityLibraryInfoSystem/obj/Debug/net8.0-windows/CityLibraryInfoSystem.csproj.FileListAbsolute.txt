@@ -30,3 +30,4 @@ C:\Users\Admin\Desktop\Костя\УЧЕБА\Проекты по C#\CityLibraryI
 C:\Users\Admin\Desktop\Костя\УЧЕБА\Проекты по C#\CityLibraryInfoSystem\CityLibraryInfoSystem\obj\Debug\net8.0-windows\CityLibraryInfoSystem.genruntimeconfig.cache
 C:\Users\Admin\Desktop\Костя\УЧЕБА\Проекты по C#\CityLibraryInfoSystem\CityLibraryInfoSystem\obj\Debug\net8.0-windows\ref\CityLibraryInfoSystem.dll
 C:\Users\Admin\Desktop\Костя\УЧЕБА\Проекты по C#\CityLibraryInfoSystem\CityLibraryInfoSystem\obj\Debug\net8.0-windows\CityLibraryInfoSystem.MainForm.resources
+C:\Users\Admin\Desktop\Костя\УЧЕБА\Проекты по C#\CityLibraryInfoSystem\CityLibraryInfoSystem\obj\Debug\net8.0-windows\CityLibraryInfoSystem.sourcelink.json

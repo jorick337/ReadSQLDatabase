@@ -2,7 +2,6 @@ namespace CityLibraryInfoSystem
 {
     public partial class ConnectionToDataBase : Form
     {
-
         public ConnectionToDataBase()
         {
             InitializeComponent();
@@ -39,14 +38,31 @@ namespace CityLibraryInfoSystem
         private void button_Connect_Click(object sender, EventArgs e)
         {
             MergeData();
+            
+            if (BasicDatabaseValues.ActiveDatabase?.ConnectionToDatabase.State == System.Data.ConnectionState.Open)
+            {
+                MainForm.thisForm?.UpdateForm();
+            }
+            MainForm.thisForm?.Show();
 
-            MainForm MainForm = new MainForm(this);
-            MainForm.Show();
+            Hide();
         }
 
-        private void textBox_ServerName_TextChanged(object sender, EventArgs e)
+        private void ConnectionToDataBase_FormClosed(object sender, FormClosedEventArgs e)
         {
+            Application.Exit();
+        }
 
+        private void checkBox_ShowPasswordUser_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox_ShowPasswordUser.Checked == true)
+            {
+                textBox_PasswordUser.PasswordChar = new char();
+            }
+            else
+            {
+                textBox_PasswordUser.PasswordChar = '*';
+            }
         }
     }
 }

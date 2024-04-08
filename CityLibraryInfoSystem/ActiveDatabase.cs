@@ -1,5 +1,8 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Google.Protobuf.WellKnownTypes;
+using MySql.Data.MySqlClient;
 using System.Data;
+using System.Windows.Forms;
+using System.Xml;
 
 namespace CityLibraryInfoSystem
 {
@@ -48,17 +51,108 @@ namespace CityLibraryInfoSystem
 
             return dataTable;
         }
+        
+        public void Open()
+        {
+            ConnectionToDatabase.Open();
+        }
+
+        public void SetUpdate(DataTable dataTable)
+        {
+            var command = $"SELECT * FROM {dataTable.TableName}";
+
+            MySqlDataAdapter adapter = new MySqlDataAdapter(SendCommandToDatabase(command));
+
+            MySqlCommandBuilder mySqlCommandBuilder = new MySqlCommandBuilder(adapter);
+
+            adapter.Update(dataTable);
+        }
+
+        public void ExportDatabase(DataTable dataTable)
+        {
+            XmlDocument xmlDoc = new();
+
+            XmlElement rootElement = xmlDoc.CreateElement("DATA");
+            xmlDoc.AppendChild(rootElement);
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                XmlElement rowElement = xmlDoc.CreateElement("ROW");
+                rootElement.AppendChild(rowElement);
+
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    XmlElement columnElement = xmlDoc.CreateElement(column.ColumnName);
+                    columnElement.InnerText = row[column].ToString()!;
+                    rowElement.AppendChild(columnElement);
+                }
+            }
+
+            SaveFileDialog saveFileDialog = new() { Filter = "XML files (*.xml)|*.xml|CSV files (*.csv)|*.csv", Title = "Сохранить файл" };
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.FileName != "")
+            {
+                xmlDoc.Save(saveFileDialog.FileName);
+            }
+        }
+
+        public DataTable ImportDatabase()
+        {
+            DataTable dataTable = new();
+
+            OpenFileDialog openFileDialog = new() { Filter = "XML files (*.xml)|*.xml|CSV files (*.csv)|*.csv", Title = "Открыть файл" };
+            openFileDialog.ShowDialog();
+
+            if (openFileDialog.FileName != "")
+            {
+                string pathToFile = openFileDialog.FileName;
+                if (pathToFile.Split(".csv").Length > 1)
+                {
+
+                    StreamReader streamReader = new(pathToFile);
+
+                    string[] headers = streamReader.ReadLine()!.Split(',');
+                    foreach (string header in headers)
+                    {
+                        dataTable.Columns.Add(header.Trim());
+                    }
+
+                    while (!streamReader.EndOfStream)
+                    {
+                        string[] rows = streamReader.ReadLine()!.Split(',');
+                        DataRow dataRow = dataTable.NewRow();
+                        for (int i = 0; i < headers.Length; i++)
+                        {
+                            dataRow[i] = rows[i].Trim();
+                        }
+                        dataTable.Rows.Add(dataRow);
+                    }
+                }
+                else
+                {
+                    XmlDocument xmlDoc = new();
+                    xmlDoc.Load(pathToFile);
+
+                    XmlNodeReader xmlNodeReader = new(xmlDoc);
+
+                    DataSet dataSet = new DataSet();
+                    dataSet.ReadXml(xmlNodeReader);
+
+                    dataTable = dataSet.Tables[0];
+                }
+            }
+
+            return dataTable;
+        }
 
         private MySqlCommand SendCommandToDatabase(string command)
         {
             MySqlCommand mySqlCommand = new MySqlCommand(command, ConnectionToDatabase);
 
             return mySqlCommand;
-        }
 
-        public void Open()
-        {
-            ConnectionToDatabase.Open();
+
         }
     }
 }

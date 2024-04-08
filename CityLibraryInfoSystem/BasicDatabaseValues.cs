@@ -1,15 +1,10 @@
-﻿using MySql.Data.MySqlClient;
-using System.ComponentModel.Design;
-using System.Data;
-using static System.Windows.Forms.LinkLabel;
-
-namespace CityLibraryInfoSystem
+﻿namespace CityLibraryInfoSystem
 {
     internal class BasicDatabaseValues
     {
-        public static ActiveDatabase ActiveDatabase { get; set; }
+        public static ActiveDatabase? ActiveDatabase { get; set; }
 
-        public BasicDatabaseValues() 
+        public BasicDatabaseValues()
         {
             ActiveDatabase = new ActiveDatabase();
         }
